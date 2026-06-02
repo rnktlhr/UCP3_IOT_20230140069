@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Sensor IoT</title>
+</head>
+<body>
+
+  <h1>Dashboard Sensor IoT</h1>
+  <p class="sub">Universitas Muhammadiyah Yogyakarta - Fakultas Teknik - Informatika 2023</p>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="label">Total Data</div>
+      <div class="value" id="stat-total">-</div>
+      <div class="minmax" id="stat-range">-</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Rata-rata Suhu</div>
+      <div class="value" id="stat-temp">-</div>
+      <div class="minmax" id="stat-temp-mm">-</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Rata-rata Kelembaban</div>
+      <div class="value" id="stat-hum">-</div>
+      <div class="minmax" id="stat-hum-mm">-</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Rata-rata Tekanan</div>
+      <div class="value" id="stat-pres">-</div>
+      <div class="minmax" id="stat-pres-mm">-</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <h2>Sensor 1 - Suhu (Temperature) &deg;C</h2>
+    <canvas id="chartTemp"></canvas>
+  </div>
+
+  <div class="chart-wrap">
+    <h2>Sensor 2 - Kelembaban (Humidity) %</h2>
+    <canvas id="chartHum"></canvas>
+  </div>
+
+  <div class="chart-wrap">
+    <h2>Sensor 3 - Tekanan Udara (Pressure) hPa</h2>
+    <canvas id="chartPres"></canvas>
+  </div>
+
+  <script type="module">
+    import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip } from 'chart.js';
+    Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip);
+
+    const DATA = {
+      "year": "2023",
+      "datasensorreport": [
+        {
+          "institute": "University of Muhammadiyah Yogyakarta",
+          "faculty": "Engineering",
+          "major": "Information Technology",
+          "sensordata": [
+            { "sensor_id": "1", "timestamp": "2023-05-1T10:15:30Z",  "temperature": 25.6, "humidity": 60.2, "pressure": 1013.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-2T10:15:30Z",  "temperature": 26.6, "humidity": 61.2, "pressure": 1014.7, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-3T10:15:30Z",  "temperature": 27.6, "humidity": 62.2, "pressure": 1015.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-4T11:15:30Z",  "temperature": 28.6, "humidity": 63.2, "pressure": 1016.3, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-5T10:15:30Z",  "temperature": 29.6, "humidity": 64.2, "pressure": 1017.4, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-6T10:15:30Z",  "temperature": 30.6, "humidity": 65.2, "pressure": 1011.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-7T10:15:30Z",  "temperature": 25.8, "humidity": 60.5, "pressure": 1012.4, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-8T10:15:30Z",  "temperature": 26.9, "humidity": 61.6, "pressure": 1017.5, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-9T10:15:30Z",  "temperature": 27.8, "humidity": 61.8, "pressure": 1018.3, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-10T10:15:30Z", "temperature": 29.6, "humidity": 62.9, "pressure": 1013.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-11T10:15:30Z", "temperature": 25.3, "humidity": 60.9, "pressure": 1013.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-12T10:15:30Z", "temperature": 29.8, "humidity": 61.9, "pressure": 1011.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-13T10:15:30Z", "temperature": 29.8, "humidity": 68.9, "pressure": 1011.7, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-14T10:15:30Z", "temperature": 26.8, "humidity": 63.9, "pressure": 1011.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-15T10:15:30Z", "temperature": 24.8, "humidity": 62.5, "pressure": 1013.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-16T10:15:30Z", "temperature": 26.8, "humidity": 68.5, "pressure": 1014.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-17T10:15:30Z", "temperature": 29.8, "humidity": 69.5, "pressure": 1021.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-18T10:15:30Z", "temperature": 26.9, "humidity": 64.5, "pressure": 1113.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-19T10:15:30Z", "temperature": 26.9, "humidity": 63.5, "pressure": 1018.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-20T10:15:30Z", "temperature": 28.9, "humidity": 60.5, "pressure": 1015.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-21T10:15:30Z", "temperature": 28.3, "humidity": 61.5, "pressure": 1018.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-22T10:15:30Z", "temperature": 30.3, "humidity": 67.5, "pressure": 1020.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-23T10:15:30Z", "temperature": 35.3, "humidity": 69.5, "pressure": 1027.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-24T10:15:30Z", "temperature": 36.6, "humidity": 64.7, "pressure": 1022.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-25T10:15:30Z", "temperature": 36.6, "humidity": 64.7, "pressure": 1022.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-26T10:15:30Z", "temperature": 35.6, "humidity": 62.7, "pressure": 1032.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-27T10:15:30Z", "temperature": 37.6, "humidity": 64.7, "pressure": 1042.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-28T10:15:30Z", "temperature": 30.6, "humidity": 60.7, "pressure": 1052.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-29T10:15:30Z", "temperature": 29.6, "humidity": 64.7, "pressure": 1042.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" },
+            { "sensor_id": "1", "timestamp": "2023-05-30T10:15:30Z", "temperature": 28.6, "humidity": 62.7, "pressure": 1035.2, "location": { "latitude": 37.7749, "longitude": -120.4194 }, "status": "active" }
+          ]
+        }
+      ]
+    };
+
+    const rows = DATA.datasensorreport[0].sensordata;
+
+    const labels = rows.map(d => {
+      const bagian = d.timestamp.split('T')[0].split('-');
+      return bagian[2] + ' Mei';
+    });
+    const temps = rows.map(d => d.temperature);
+    const hums  = rows.map(d => d.humidity);
+    const press = rows.map(d => d.pressure);
+
+    const avg = arr => (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
+
+    document.getElementById('stat-total').textContent   = rows.length;
+    document.getElementById('stat-range').textContent   = '1 Mei - 30 Mei 2023';
+    document.getElementById('stat-temp').textContent    = avg(temps) + ' °C';
+    document.getElementById('stat-temp-mm').textContent = 'Min: ' + Math.min(...temps) + '  Max: ' + Math.max(...temps);
+    document.getElementById('stat-hum').textContent     = avg(hums) + ' %';
+    document.getElementById('stat-hum-mm').textContent  = 'Min: ' + Math.min(...hums) + '  Max: ' + Math.max(...hums);
+    document.getElementById('stat-pres').textContent    = avg(press) + ' hPa';
+    document.getElementById('stat-pres-mm').textContent = 'Min: ' + Math.min(...press) + '  Max: ' + Math.max(...press);
+
+    function buatChart(id, data, warna, satuan) {
+      new Chart(document.getElementById(id), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: satuan,
+            data: data,
+            borderColor: warna,
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { font: { size: 11 } } },
+            y: { ticks: { callback: v => v + ' ' + satuan } }
+          }
+        }
+      });
+    }
+
+    buatChart('chartTemp', temps, '#e53935', '°C');
+    buatChart('chartHum',  hums,  '#1e88e5', '%');
+    buatChart('chartPres', press, '#43a047', 'hPa');
+  </script>
+
+</body>
+</html>
