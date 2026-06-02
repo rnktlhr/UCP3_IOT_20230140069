@@ -7,32 +7,6 @@
 </head>
 <body>
 
-  <h1>Dashboard Sensor IoT</h1>
-  <p class="sub">Universitas Muhammadiyah Yogyakarta - Fakultas Teknik - Informatika 2023</p>
-
-  <div class="stats">
-    <div class="stat-box">
-      <div class="label">Total Data</div>
-      <div class="value" id="stat-total">-</div>
-      <div class="minmax" id="stat-range">-</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Rata-rata Suhu</div>
-      <div class="value" id="stat-temp">-</div>
-      <div class="minmax" id="stat-temp-mm">-</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Rata-rata Kelembaban</div>
-      <div class="value" id="stat-hum">-</div>
-      <div class="minmax" id="stat-hum-mm">-</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Rata-rata Tekanan</div>
-      <div class="value" id="stat-pres">-</div>
-      <div class="minmax" id="stat-pres-mm">-</div>
-    </div>
-  </div>
-
   <div class="chart-wrap">
     <h2>Sensor 1 - Suhu (Temperature) &deg;C</h2>
     <canvas id="chartTemp"></canvas>
@@ -105,16 +79,7 @@
     const hums  = rows.map(d => d.humidity);
     const press = rows.map(d => d.pressure);
 
-    const avg = arr => (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
 
-    document.getElementById('stat-total').textContent   = rows.length;
-    document.getElementById('stat-range').textContent   = '1 Mei - 30 Mei 2023';
-    document.getElementById('stat-temp').textContent    = avg(temps) + ' °C';
-    document.getElementById('stat-temp-mm').textContent = 'Min: ' + Math.min(...temps) + '  Max: ' + Math.max(...temps);
-    document.getElementById('stat-hum').textContent     = avg(hums) + ' %';
-    document.getElementById('stat-hum-mm').textContent  = 'Min: ' + Math.min(...hums) + '  Max: ' + Math.max(...hums);
-    document.getElementById('stat-pres').textContent    = avg(press) + ' hPa';
-    document.getElementById('stat-pres-mm').textContent = 'Min: ' + Math.min(...press) + '  Max: ' + Math.max(...press);
 
     function buatChart(id, data, warna, satuan) {
       new Chart(document.getElementById(id), {
